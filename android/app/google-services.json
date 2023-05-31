@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "265342153866",
+    "project_id": "holdit-xetz",
+    "storage_bucket": "holdit-xetz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:265342153866:android:f6fa1ed81de26755202973",
+        "android_client_info": {
+          "package_name": "com.xetz.holdit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "265342153866-lk08j74jgfde38q21d9dhlchaqslcdf8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK20j-ARWesbFV38pSAqZM89XojXBOZDA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "265342153866-lk08j74jgfde38q21d9dhlchaqslcdf8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
