@@ -6,7 +6,6 @@ import 'package:holdit/services/auth/auth_service.dart';
 import 'package:holdit/wiews/login_view.dart';
 import 'package:holdit/wiews/notes_view.dart';
 import 'package:holdit/wiews/register_view.dart';
-import 'package:holdit/wiews/splash_screen.dart';
 import 'package:holdit/wiews/verify_email_view.dart';
 
 void main() {
@@ -52,7 +51,7 @@ class HomePage extends StatelessWidget {
             }
 
           default:
-            return const SplashScreen();
+            return const CircularProgressIndicator();
         }
       },
     );
