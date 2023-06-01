@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:holdit/constants/routes.dart';
 import 'package:holdit/firebase_options.dart';
 import 'package:holdit/services/auth/auth_service.dart';
+import 'package:holdit/wiews/loading_screen.dart';
 import 'package:holdit/wiews/login_view.dart';
 import 'package:holdit/wiews/notes_view.dart';
 import 'package:holdit/wiews/register_view.dart';
@@ -51,7 +52,7 @@ class HomePage extends StatelessWidget {
             }
 
           default:
-            return const CircularProgressIndicator();
+            return const LoadingScreen();
         }
       },
     );
