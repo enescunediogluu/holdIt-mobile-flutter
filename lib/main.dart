@@ -13,6 +13,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     title: 'Hold It!',
     theme: ThemeData(
       primarySwatch: Colors.deepPurple,
