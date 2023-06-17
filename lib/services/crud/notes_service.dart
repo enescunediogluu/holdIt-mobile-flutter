@@ -6,16 +6,43 @@ import 'package:path/path.dart' show join;
 import 'package:sqflite/sqflite.dart';
 import 'crud_exceptions.dart';
 
+const dbName = 'notes.db';
+const noteTable = 'note';
+const userTable = 'user';
+const idColumn = 'id';
+const emailColumn = 'email';
+const userIdColumn = 'user_id';
+const textColumn = 'text';
+const isSyncedWithCloudColumn = 'is_synced_with_cloud';
+const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
+	"id"	INTEGER NOT NULL,
+	"email"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);''';
+const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
+         "id"	INTEGER NOT NULL,
+         "user_id"	INTEGER NOT NULL,
+         "text"	TEXT,
+         "is_synced_with_cloud"	INTEGER NOT NULL DEFAULT 0,
+         FOREIGN KEY("user_id") REFERENCES "user"("id"),
+         PRIMARY KEY("id" AUTOINCREMENT)
+       );''';
+
 class NoteService {
   Database? _db;
   List<DatabaseNote> _notes = [];
 
   static final NoteService _shared = NoteService._sharedInstance();
-  NoteService._sharedInstance();
+  NoteService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NoteService() => _shared;
 
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -296,26 +323,3 @@ class DatabaseNote {
   @override
   int get hashCode => id.hashCode;
 }
-
-const dbName = 'notes.db';
-const noteTable = 'note';
-const userTable = 'user';
-const idColumn = 'id';
-const emailColumn = 'email';
-const userIdColumn = 'userIdColumn';
-const textColumn = 'text';
-const isSyncedWithCloudColumn = 'isSyncedWithCloud';
-const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
-	"id"	INTEGER NOT NULL,
-	"email"	TEXT NOT NULL UNIQUE,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);''';
-const createNoteTable = '''
-CREATE TABLE IF NOT EXISTS "note" (
-	"id"	INTEGER NOT NULL,
-	"user_id"	INTEGER NOT NULL,
-	"text"	TEXT,
-	"is_synced_with_cloud"	INTEGER DEFAULT 0,
-	PRIMARY KEY("id" AUTOINCREMENT)
-);
-''';
