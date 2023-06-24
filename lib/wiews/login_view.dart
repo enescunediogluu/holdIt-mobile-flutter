@@ -6,6 +6,7 @@ import 'package:holdit/constants/routes.dart';
 import 'package:holdit/services/auth/auth_exceptions.dart';
 import 'package:holdit/services/auth/bloc/auth_bloc.dart';
 import 'package:holdit/services/auth/bloc/auth_event.dart';
+import 'package:holdit/services/auth/bloc/auth_state.dart';
 
 import '../utilities/dialogs/error_dialog.dart';
 
@@ -149,47 +150,46 @@ class _LoginViewState extends State<LoginView> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextButton(
-                  onPressed: () async {
-                    final email = _email.text;
-                    final password = _password.text;
+                BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) async {
+                    if (state is AuthStateLoggedOut) {
+                      if (state.exception is UserNotFoundAuthException) {
+                        await showErrorDialog(context,
+                            'This user is not exist. Please try again!');
+                      } else if (state.exception
+                          is WrongPasswordAuthException) {
+                        await showErrorDialog(context,
+                            'The password is wrong. Please try again!');
+                      } else if (state.exception is GenericAuthException) {
+                        await showErrorDialog(context, 'Authentication Error');
+                      }
+                    }
+                  },
+                  child: TextButton(
+                    onPressed: () async {
+                      final email = _email.text;
+                      final password = _password.text;
 
-                    try {
                       context.read<AuthBloc>().add(AuthEventLogIn(
                             email,
                             password,
                           ));
-                    } on UserNotFoundAuthException {
-                      await showErrorDialog(
-                        context,
-                        'This user is not exist. Please try again!',
-                      );
-                    } on WrongPasswordAuthException {
-                      await showErrorDialog(
-                        context,
-                        'The password is wrong. Please try again!',
-                      );
-                    } on GenericAuthException {
-                      await showErrorDialog(
-                        context,
-                        'Authentication Error',
-                      );
-                    }
-                  },
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 25, horizontal: 135),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.deepPurple,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 25, horizontal: 135),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: const Text(
-                    'Sign In',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontFamily: 'MainFont'),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontFamily: 'MainFont'),
+                    ),
                   ),
                 ),
                 const SizedBox(
