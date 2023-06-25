@@ -32,16 +32,38 @@ class _NoteViewState extends State<NoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Your Notes'),
-          backgroundColor: Colors.deepPurple,
+          title: const Text(
+            'Your Notes',
+            style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'MainFont',
+                fontSize: 30,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          toolbarHeight: 100,
           actions: [
             IconButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
               },
-              icon: const Icon(Icons.add),
+              icon: const Icon(Icons.add, color: Colors.black, size: 35),
             ),
             PopupMenuButton<MenuAction>(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
+              elevation: 3,
+              surfaceTintColor: Colors.black,
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.black,
+                size: 35,
+              ),
+              color: Colors.white,
               onSelected: (value) async {
                 switch (value) {
                   case MenuAction.logout:
@@ -58,7 +80,15 @@ class _NoteViewState extends State<NoteView> {
                 return const [
                   PopupMenuItem<MenuAction>(
                     value: MenuAction.logout,
-                    child: Text('Log out'),
+                    child: Center(
+                      child: Text(
+                        'Log out',
+                        style: TextStyle(
+                          fontFamily: 'MainFont',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
                 ];
               },
