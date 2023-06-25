@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:holdit/constants/routes.dart';
-import 'package:holdit/services/auth/auth_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:holdit/services/auth/bloc/auth_bloc.dart';
+import 'package:holdit/services/auth/bloc/auth_event.dart';
 
 class VerifyEmailView extends StatefulWidget {
   const VerifyEmailView({super.key});
@@ -91,8 +92,10 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: TextButton(
-                      onPressed: () async {
-                        await AuthService.firebase().sendEmailVerification();
+                      onPressed: () {
+                        context
+                            .read<AuthBloc>()
+                            .add(const AuthEventSendEmailVerification());
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.green,
@@ -140,12 +143,8 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
                     child: TextButton(
-                      onPressed: () async {
-                        await AuthService.firebase().logOut();
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          loginRoute,
-                          (route) => false,
-                        );
+                      onPressed: () {
+                        context.read<AuthBloc>().add(const AuthEventLogOut());
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.deepPurple,
