@@ -91,9 +91,24 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: const Color(0xffFDF4F5),
       appBar: AppBar(
-        title: const Text('New Note'),
+        leading: const Icon(
+          Icons.note_add,
+          color: Colors.deepPurple,
+          size: 35,
+        ),
+        toolbarHeight: 100,
+        title: const Text(
+          'New Note',
+          style: TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontFamily: 'MainFont',
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         actions: [
           IconButton(
             onPressed: () async {
@@ -104,8 +119,19 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                 Share.share(text);
               }
             },
-            icon: const Icon(Icons.share),
-          )
+            icon: const Icon(
+              Icons.share,
+              color: Colors.black,
+            ),
+          ),
+          IconButton(
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.save,
+                color: Colors.black,
+              ))
         ],
       ),
       body: FutureBuilder(
@@ -115,17 +141,26 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             case ConnectionState.done:
               _note = snapshot.data;
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                    hintText: 'Start typing your note...',
-                    hintStyle: TextStyle(fontFamily: 'MainFont')),
+              return Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextField(
+                  controller: _textController,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  style: const TextStyle(fontSize: 20, fontFamily: 'MainFont'),
+                  decoration: const InputDecoration(
+                      hintText: 'Start typing your note...',
+                      hintStyle:
+                          TextStyle(fontFamily: 'MainFont', fontSize: 20),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xffFDF4F5))),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xffFDF4F5)))),
+                ),
               );
 
             default:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
           }
         },
       ),

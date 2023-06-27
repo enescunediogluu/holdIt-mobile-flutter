@@ -27,6 +27,7 @@ void main() {
     ),
     routes: {
       createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+      registerRoute: (context) => const RegisterView(),
     },
   ));
 }

@@ -13,7 +13,22 @@ Future<T?> showGenericDialog<T>({
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(title),
+          backgroundColor: const Color(0xffFDF4F5),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          contentTextStyle: const TextStyle(
+            fontFamily: 'MainFont',
+            color: Colors.black,
+            fontSize: 20,
+          ),
+          elevation: 0,
+          title: Text(
+            title,
+            style: const TextStyle(
+                fontSize: 25,
+                fontFamily: 'MainFont',
+                fontWeight: FontWeight.bold),
+          ),
           content: Text(content),
           actions: options.keys.map((optionTitle) {
             final T value = options[optionTitle];
@@ -25,7 +40,23 @@ Future<T?> showGenericDialog<T>({
                     Navigator.of(context).pop();
                   }
                 },
-                child: Text(optionTitle));
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.deepPurple,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      optionTitle,
+                      style: const TextStyle(
+                        fontFamily: 'MainFont',
+                        color: Colors.white,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ));
           }).toList(),
         );
       });

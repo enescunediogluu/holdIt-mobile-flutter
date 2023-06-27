@@ -31,11 +31,12 @@ class _NoteViewState extends State<NoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color(0xffFDF4F5),
         appBar: AppBar(
           title: const Text(
             'Your Notes',
             style: TextStyle(
-                color: Colors.black,
+                color: Color(0XFF000000),
                 fontFamily: 'MainFont',
                 fontSize: 30,
                 fontWeight: FontWeight.bold),
@@ -63,7 +64,7 @@ class _NoteViewState extends State<NoteView> {
                 color: Colors.black,
                 size: 35,
               ),
-              color: Colors.white,
+              color: const Color(0xffFDF4F5),
               onSelected: (value) async {
                 switch (value) {
                   case MenuAction.logout:
@@ -80,14 +81,23 @@ class _NoteViewState extends State<NoteView> {
                 return const [
                   PopupMenuItem<MenuAction>(
                     value: MenuAction.logout,
-                    child: Center(
-                      child: Text(
-                        'Log out',
-                        style: TextStyle(
-                          fontFamily: 'MainFont',
-                          fontWeight: FontWeight.bold,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.logout,
+                          color: Colors.black,
                         ),
-                      ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          'Log out',
+                          style: TextStyle(
+                              fontFamily: 'MainFont',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 19),
+                        ),
+                      ],
                     ),
                   ),
                 ];

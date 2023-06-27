@@ -49,9 +49,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEventLogIn>(
       (event, emit) async {
         emit(const AuthStateLoggedOut(
-            exception: null,
-            isLoading: true,
-            loadingText: 'Please wait while I log you in...'));
+          exception: null,
+          isLoading: true,
+          loadingText: 'Signing In ...',
+        ));
         final email = event.email;
         final password = event.password;
         try {
@@ -82,10 +83,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       },
     );
+    //Should register
+    on<AuthEventShouldRegister>(
+      (event, emit) =>
+          emit(const AuthStateRegistering(exception: null, isLoading: false)),
+    );
+
     //logout
     on<AuthEventLogOut>(
       (event, emit) async {
-        emit(const AuthStateUninitialized(isLoading: false));
+        emit(const AuthStateUninitialized(isLoading: true));
         try {
           await provider.logOut();
           emit(
