@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:holdit/services/auth/auth_service.dart';
 import 'package:holdit/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:holdit/utilities/generics/get_arguments.dart';
@@ -30,6 +31,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
     if (widgetNote != null) {
       _note = widgetNote;
+
       _textController.text = widgetNote.text;
       return widgetNote;
     }
@@ -80,6 +82,15 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     }
   }
 
+  void _initImagePath() async {
+    final note = _note;
+    final imagePath = await _noteService.pickAnImageAndGetUrl();
+    if (note != null) {
+      _noteService.addImageToNote(
+          documentId: note.documentId, imageUrl: imagePath);
+    }
+  }
+
   @override
   void dispose() {
     _deleteNoteIfTextIsEmpty();
@@ -91,6 +102,12 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.image),
+        onPressed: () async {
+          _initImagePath();
+        },
+      ),
       backgroundColor: const Color(0xffFDF4F5),
       appBar: AppBar(
         leading: const Icon(
@@ -141,22 +158,27 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             case ConnectionState.done:
               _note = snapshot.data;
               _setupTextControllerListener();
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  controller: _textController,
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
-                  style: const TextStyle(fontSize: 20, fontFamily: 'MainFont'),
-                  decoration: const InputDecoration(
-                      hintText: 'Start typing your note...',
-                      hintStyle:
-                          TextStyle(fontFamily: 'MainFont', fontSize: 20),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffFDF4F5))),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffFDF4F5)))),
-                ),
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: TextField(
+                      controller: _textController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
+                      style: GoogleFonts.outfit(fontSize: 22),
+                      decoration: const InputDecoration(
+                          hintText: 'Start typing your note...',
+                          hintStyle:
+                              TextStyle(fontFamily: 'MainFont', fontSize: 20),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Color(0xffFDF4F5))),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Color(0xffFDF4F5)))),
+                    ),
+                  ),
+                ],
               );
 
             default:

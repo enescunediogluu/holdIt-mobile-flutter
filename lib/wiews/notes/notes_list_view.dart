@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:holdit/services/cloud/cloud_note.dart';
 import 'package:holdit/utilities/dialogs/delete_dialog.dart';
 
@@ -69,11 +70,8 @@ class NotesListView extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(note.text,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    fontFamily: 'MainFont',
-                                    color: Color.fromARGB(255, 60, 50, 60)),
+                                style: GoogleFonts.outfit(
+                                    fontWeight: FontWeight.w400, fontSize: 18),
                                 overflow: TextOverflow.ellipsis),
                           ),
                         ],

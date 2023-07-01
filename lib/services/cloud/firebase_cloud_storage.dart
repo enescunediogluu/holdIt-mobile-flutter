@@ -1,10 +1,17 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:holdit/services/cloud/cloud_note.dart';
 import 'package:holdit/services/cloud/cloud_storage_constants.dart';
 import 'package:holdit/services/cloud/cloud_storage_exceptions.dart';
+import 'package:image_picker/image_picker.dart';
 
 class FirebaseCloudStorage {
+  final storage = FirebaseStorage.instance;
+  final picker = ImagePicker();
   final notes = FirebaseFirestore.instance.collection('notes');
+  String imageUrl = '';
 
   Future<void> deleteNote({required String documentId}) async {
     try {
@@ -22,6 +29,39 @@ class FirebaseCloudStorage {
       await notes.doc(documentId).update({textFieldName: text});
     } catch (e) {
       throw CouldNotUpdateNoteException();
+    }
+  }
+
+  Future<String> pickAnImageAndGetUrl() async {
+    ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference referenceRoot = FirebaseStorage.instance.ref();
+      Reference referenceDirImages = referenceRoot.child('images');
+      Reference referenceImageToUpload =
+          referenceDirImages.child(uniqueFileName);
+
+      try {
+        await referenceImageToUpload.putFile(File(file.path));
+        imageUrl = await referenceImageToUpload.getDownloadURL();
+        return imageUrl;
+      } catch (error) {
+        throw Exception();
+      }
+    } else {
+      return '';
+    }
+  }
+
+  Future<void> addImageToNote({
+    required String documentId,
+    required String imageUrl,
+  }) async {
+    try {
+      await notes.doc(documentId).update({imageUrlFieldName: imageUrl});
+    } catch (e) {
+      throw CouldNotAddImageToNoteException();
     }
   }
 
