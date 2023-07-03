@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:holdit/services/auth/auth_service.dart';
 import 'package:holdit/utilities/dialogs/cannot_share_empty_note_dialog.dart';
+import 'package:holdit/utilities/dialogs/delete_image_dialog.dart';
 import 'package:holdit/utilities/generics/get_arguments.dart';
 import 'package:holdit/services/cloud/cloud_note.dart';
 import 'package:holdit/services/cloud/firebase_cloud_storage.dart';
@@ -15,6 +16,10 @@ class CreateUpdateNoteView extends StatefulWidget {
 }
 
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
+  bool _imageDeleted = false;
+  bool _isLoadingImage = false;
+  bool _isUploadingImage = false;
+
   @override
   void initState() {
     _noteService = FirebaseCloudStorage();
@@ -83,12 +88,24 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   }
 
   void _initImagePath() async {
+    setState(() {
+      _isUploadingImage =
+          true; // Set _isUploadingImage to true to prevent user interactions
+    });
+
     final note = _note;
     final imagePath = await _noteService.pickAnImageAndGetUrl();
     if (note != null) {
-      _noteService.addImageToNote(
-          documentId: note.documentId, imageUrl: imagePath);
+      await _noteService.addImageToNote(
+        documentId: note.documentId,
+        imageUrl: imagePath,
+      );
     }
+
+    setState(() {
+      _isUploadingImage =
+          false; // Set _isUploadingImage to false to allow user interactions
+    });
   }
 
   @override
@@ -158,33 +175,116 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
             case ConnectionState.done:
               _note = snapshot.data;
               _setupTextControllerListener();
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextField(
-                      controller: _textController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      style: GoogleFonts.outfit(fontSize: 22),
-                      decoration: const InputDecoration(
-                          hintText: 'Start typing your note...',
-                          hintStyle:
-                              TextStyle(fontFamily: 'MainFont', fontSize: 20),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Color(0xffFDF4F5))),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Color(0xffFDF4F5)))),
-                    ),
+              return AbsorbPointer(
+                absorbing: _isUploadingImage,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      NoteViewTextFieldItem(textController: _textController),
+                      if (_isUploadingImage)
+                        Container(
+                          width: 350,
+                          height: 350,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Colors.grey[300],
+                          ),
+                          child:
+                              const Center(child: CircularProgressIndicator()),
+                        ),
+                      if (_note?.imageUrl != null &&
+                          !_imageDeleted &&
+                          !_isLoadingImage)
+                        GestureDetector(
+                          onDoubleTap: () async {
+                            final shouldDeleteImage =
+                                await deleteImageDialog(context);
+                            if (shouldDeleteImage) {
+                              await _noteService.deleteImageInTheNote(
+                                  documentId: _note!.documentId,
+                                  imageUrl: _note!.imageUrl!);
+
+                              setState(() {
+                                _imageDeleted = true;
+                              });
+                            }
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Image.network(
+                              _note!.imageUrl!,
+                              width: 350,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) {
+                                  _isLoadingImage = false;
+                                  return child;
+                                }
+                                _isLoadingImage = true;
+                                return Container(
+                                  decoration:
+                                      BoxDecoration(color: Colors.grey[300]),
+                                  width: 350,
+                                  height: 350,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      const SizedBox(
+                        height: 25,
+                      )
+                    ],
                   ),
-                ],
+                ),
               );
 
             default:
               return const Center(child: CircularProgressIndicator());
           }
         },
+      ),
+    );
+  }
+}
+
+// ignore: camel_case_types
+class NoteViewTextFieldItem extends StatelessWidget {
+  const NoteViewTextFieldItem({
+    super.key,
+    required TextEditingController textController,
+  }) : _textController = textController;
+
+  final TextEditingController _textController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: TextField(
+        controller: _textController,
+        keyboardType: TextInputType.multiline,
+        maxLines: null,
+        style: GoogleFonts.outfit(fontSize: 22),
+        decoration: const InputDecoration(
+            hintText: 'Start typing your note...',
+            hintStyle: TextStyle(fontFamily: 'MainFont', fontSize: 20),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xffFDF4F5))),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Color(0xffFDF4F5)))),
       ),
     );
   }

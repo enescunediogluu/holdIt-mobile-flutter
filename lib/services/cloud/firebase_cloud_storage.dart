@@ -44,6 +44,7 @@ class FirebaseCloudStorage {
 
       try {
         await referenceImageToUpload.putFile(File(file.path));
+
         imageUrl = await referenceImageToUpload.getDownloadURL();
         return imageUrl;
       } catch (error) {
@@ -62,6 +63,20 @@ class FirebaseCloudStorage {
       await notes.doc(documentId).update({imageUrlFieldName: imageUrl});
     } catch (e) {
       throw CouldNotAddImageToNoteException();
+    }
+  }
+
+  Future<void> deleteImageInTheNote({
+    required String documentId,
+    required String imageUrl,
+  }) async {
+    try {
+      final imageRef = storage.refFromURL(imageUrl);
+
+      await notes.doc(documentId).update({imageUrlFieldName: null});
+      await imageRef.delete();
+    } catch (e) {
+      throw CouldNotDeletImageException();
     }
   }
 

@@ -13,7 +13,7 @@ class CloudNote {
     required this.documentId,
     required this.ownerUserId,
     required this.text,
-    this.imageUrl = '',
+    this.imageUrl,
   });
 
   CloudNote.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
