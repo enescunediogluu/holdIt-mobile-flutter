@@ -52,6 +52,14 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     return newNote;
   }
 
+  /*  void setDisplayFlag() {
+    if (_isButtonUsed) {
+      _displayFlag = '$_imageUrl';
+    } else {
+      _displayFlag = '${_note!.imageUrl}';
+    }
+  } */
+
   void _textControllerListener() async {
     final note = _note;
     if (note == null) {
@@ -67,6 +75,16 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void _setupTextControllerListener() {
     _textController.removeListener(_textControllerListener);
     _textController.addListener(_textControllerListener);
+  }
+
+  void _deleteImage() async {
+    final note = _note;
+    await _noteService.deleteImageInTheNote(
+        documentId: _note!.documentId, imageUrl: _note!.imageUrl!);
+    note!.imageUrl = null;
+    setState(() {
+      _imageDeleted = true;
+    });
   }
 
   void _deleteNoteIfTextIsEmpty() {
@@ -89,8 +107,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   void _initImagePath() async {
     setState(() {
-      _isUploadingImage =
-          true; // Set _isUploadingImage to true to prevent user interactions
+      _isUploadingImage = true;
+      // Set _isUploadingImage to true to prevent user interactions
     });
 
     final note = _note;
@@ -101,10 +119,11 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
         imageUrl: imagePath,
       );
     }
-
+    note!.imageUrl = imagePath;
     setState(() {
-      _isUploadingImage =
-          false; // Set _isUploadingImage to false to allow user interactions
+      _isUploadingImage = false;
+
+      // Set _isUploadingImage to false to allow user interactions
     });
   }
 
@@ -192,7 +211,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                           child:
                               const Center(child: CircularProgressIndicator()),
                         ),
-                      if (_note?.imageUrl != null &&
+                      if (_note!.imageUrl != null &&
                           !_imageDeleted &&
                           !_isLoadingImage)
                         GestureDetector(
@@ -200,13 +219,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                             final shouldDeleteImage =
                                 await deleteImageDialog(context);
                             if (shouldDeleteImage) {
-                              await _noteService.deleteImageInTheNote(
-                                  documentId: _note!.documentId,
-                                  imageUrl: _note!.imageUrl!);
-
-                              setState(() {
-                                _imageDeleted = true;
-                              });
+                              _deleteImage();
                             }
                           },
                           child: ClipRRect(
