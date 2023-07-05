@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:holdit/services/cloud/cloud_todo.dart';
 import 'package:holdit/utilities/dialogs/delete_todo_dialog.dart';
 
+import '../../services/cloud/firebase_cloud_storage.dart';
+
 typedef TodoCallBack = void Function(CloudTodo todo);
 
 class TodosListView extends StatefulWidget {
@@ -23,7 +25,13 @@ class TodosListView extends StatefulWidget {
 }
 
 class _TodosListViewState extends State<TodosListView> {
-  bool checkBoxIcon = false;
+  late final FirebaseCloudStorage _todoService;
+
+  @override
+  void initState() {
+    _todoService = FirebaseCloudStorage();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +39,7 @@ class _TodosListViewState extends State<TodosListView> {
       itemCount: widget.todos.length,
       itemBuilder: (context, index) {
         final todo = widget.todos.elementAt(index);
+        var checkBoxStatus = widget.todos.elementAt(index).isTaskCompleted;
         return Slidable(
           startActionPane: ActionPane(
             motion: const StretchMotion(),
@@ -66,22 +75,32 @@ class _TodosListViewState extends State<TodosListView> {
                     Expanded(
                       child: Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                checkBoxIcon = !checkBoxIcon;
-                              });
-                            },
-                            child: IconButton(
-                                icon: Icon(checkBoxIcon
-                                    ? Icons.check_box
-                                    : Icons.check_box_outline_blank),
-                                onPressed: null),
-                          ),
+                          if (checkBoxStatus != null)
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  var currentStatus = todo.isTaskCompleted;
+                                  todo.isTaskCompleted = !currentStatus!;
+
+                                  _todoService.updateTodoCheckboxStatus(
+                                      status: todo.isTaskCompleted,
+                                      documentId: todo.documentId);
+                                });
+                              },
+                              child: IconButton(
+                                  icon: Icon(checkBoxStatus
+                                      ? Icons.check_box
+                                      : Icons.check_box_outline_blank),
+                                  onPressed: null),
+                            ),
                           Expanded(
                             child: Text(todo.text,
                                 style: GoogleFonts.outfit(
-                                    fontWeight: FontWeight.w400, fontSize: 18),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 18,
+                                    decoration: todo.isTaskCompleted!
+                                        ? TextDecoration.lineThrough
+                                        : null),
                                 overflow: TextOverflow.ellipsis),
                           ),
                         ],

@@ -23,3 +23,5 @@ class CouldNotCreateTodoException extends CloudStorageException {}
 class CouldNotUpdateTodoException extends CloudStorageException {}
 
 class CouldNotDeleteTodoException extends CloudStorageException {}
+
+class CouldNotUpdateCheckboxStatus extends CloudStorageException {}

@@ -146,6 +146,17 @@ class FirebaseCloudStorage {
     }
   }
 
+  Future<void> updateTodoCheckboxStatus({
+    required bool? status,
+    required String documentId,
+  }) async {
+    try {
+      await todos.doc(documentId).update({isCompletedFieldName: status});
+    } catch (e) {
+      throw CouldNotUpdateCheckboxStatus();
+    }
+  }
+
   Future<void> updateTodo({
     required String documentId,
     required String text,
