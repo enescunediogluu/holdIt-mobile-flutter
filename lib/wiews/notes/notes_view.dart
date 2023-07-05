@@ -135,8 +135,8 @@ class _NoteViewState extends State<NoteView> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          padding: EdgeInsets.all(12),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: navBarBgColor,
             borderRadius: BorderRadius.circular(20),
@@ -146,19 +146,19 @@ class _NoteViewState extends State<NoteView> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                      color: home_background_color,
+                      color: homeBackgroundColor,
                       borderRadius: BorderRadius.circular(20)),
                   child: IconButton(
                     icon: Icon(
                       Icons.home,
-                      color: home_icon_color,
+                      color: homeIconColor,
                     ),
                     onPressed: () {
                       setState(() {
-                        todo_icon_color = navBarTabActiveColor;
-                        todo_background_color = navBarBgColor;
-                        home_background_color = navBarTabActiveColor;
-                        home_icon_color = navBarBgColor;
+                        todoIconColor = navBarTabActiveColor;
+                        todoBackgroundColor = navBarBgColor;
+                        homeBackgroundColor = navBarTabActiveColor;
+                        homeIconColor = navBarBgColor;
                       });
                     },
                   ),
@@ -167,19 +167,20 @@ class _NoteViewState extends State<NoteView> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                      color: todo_background_color,
+                      color: todoBackgroundColor,
                       borderRadius: BorderRadius.circular(20)),
                   child: IconButton(
                     icon: Image.asset(
                       'lib/images/todo_icon.png',
-                      color: todo_icon_color,
+                      color: todoIconColor,
                     ),
-                    onPressed: () {
+                    onPressed: () async {
+                      Navigator.pushNamed(context, todoListRoute);
                       setState(() {
-                        home_icon_color = navBarTabActiveColor;
-                        home_background_color = navBarBgColor;
-                        todo_icon_color = navBarBgColor;
-                        todo_background_color = navBarTabActiveColor;
+                        homeIconColor = navBarTabActiveColor;
+                        homeBackgroundColor = navBarBgColor;
+                        todoIconColor = navBarBgColor;
+                        todoBackgroundColor = navBarTabActiveColor;
                       });
                     },
                   ),
