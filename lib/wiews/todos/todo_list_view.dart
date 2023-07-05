@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:holdit/constants/routes.dart';
 import 'package:holdit/wiews/notes/bottom_nav_bar_colors.dart';
+import 'package:holdit/wiews/notes/colors.dart';
 
 class TodoListView extends StatefulWidget {
   const TodoListView({super.key});
@@ -13,14 +14,40 @@ class _TodoListViewState extends State<TodoListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('ToDo List')),
+      backgroundColor: noteViewBackgroundColor,
+      appBar: AppBar(
+        title: const Text(
+          'ToDo ',
+          style: TextStyle(
+              color: Color(0XFF000000),
+              fontFamily: 'MainFont',
+              fontSize: 35,
+              fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        toolbarHeight: 100,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.add_alert,
+                color: Colors.deepPurple,
+                size: 36,
+              ),
+            ),
+          )
+        ],
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: const EdgeInsets.all(8),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: navBarBgColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
           ),
           child: Row(
             children: [
@@ -28,7 +55,7 @@ class _TodoListViewState extends State<TodoListView> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: homeBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   child: IconButton(
                     icon: Icon(
                       Icons.home,
@@ -51,7 +78,7 @@ class _TodoListViewState extends State<TodoListView> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: todoBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   child: IconButton(
                     icon: Image.asset(
                       'lib/images/todo_icon.png',

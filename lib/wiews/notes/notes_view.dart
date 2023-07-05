@@ -9,6 +9,7 @@ import 'package:holdit/services/cloud/cloud_note.dart';
 import 'package:holdit/services/cloud/firebase_cloud_storage.dart';
 import 'package:holdit/utilities/dialogs/logout_dialog.dart';
 import 'package:holdit/wiews/notes/bottom_nav_bar_colors.dart';
+import 'package:holdit/wiews/notes/colors.dart';
 import 'package:holdit/wiews/notes/notes_list_view.dart';
 
 class NoteView extends StatefulWidget {
@@ -32,7 +33,7 @@ class _NoteViewState extends State<NoteView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFDF4F5),
+      backgroundColor: noteViewBackgroundColor,
       appBar: AppBar(
         title: const Text(
           'Your Notes',
@@ -135,11 +136,11 @@ class _NoteViewState extends State<NoteView> {
       ),
       bottomNavigationBar: SafeArea(
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: const EdgeInsets.all(8),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: navBarBgColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(30),
           ),
           child: Row(
             children: [
@@ -147,7 +148,7 @@ class _NoteViewState extends State<NoteView> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: homeBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   child: IconButton(
                     icon: Icon(
                       Icons.home,
@@ -168,14 +169,15 @@ class _NoteViewState extends State<NoteView> {
                 child: Container(
                   decoration: BoxDecoration(
                       color: todoBackgroundColor,
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(15)),
                   child: IconButton(
                     icon: Image.asset(
                       'lib/images/todo_icon.png',
                       color: todoIconColor,
                     ),
                     onPressed: () async {
-                      Navigator.pushNamed(context, todoListRoute);
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, todoListRoute, (route) => false);
                       setState(() {
                         homeIconColor = navBarTabActiveColor;
                         homeBackgroundColor = navBarBgColor;

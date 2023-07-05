@@ -5,14 +5,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:holdit/services/cloud/cloud_note.dart';
 import 'package:holdit/services/cloud/cloud_storage_constants.dart';
 import 'package:holdit/services/cloud/cloud_storage_exceptions.dart';
+import 'package:holdit/services/cloud/cloud_todo.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FirebaseCloudStorage {
   final storage = FirebaseStorage.instance;
   final picker = ImagePicker();
   final notes = FirebaseFirestore.instance.collection('notes');
+  final todos = FirebaseFirestore.instance.collection('todos');
   String imageUrl = '';
 
+  //cloud note features
   Future<void> deleteNote({required String documentId}) async {
     try {
       await notes.doc(documentId).delete();
@@ -117,6 +120,64 @@ class FirebaseCloudStorage {
       ownerUserId: ownerUserId,
       text: '',
     );
+  }
+
+  //cloud todo features
+  Future<CloudTodo> createNewTodo({required String ownerUserId}) async {
+    final document = await todos.add({
+      ownerUserIdFieldName: ownerUserId,
+      textFieldName: '',
+    });
+
+    final fetchedTodo = await document.get();
+    return CloudTodo(
+      documentId: fetchedTodo.id,
+      ownerUserId: ownerUserId,
+      text: '',
+    );
+  }
+
+  Future<void> deleteTodo({required String documentId}) async {
+    try {
+      await todos.doc(documentId).delete();
+    } catch (e) {
+      throw CouldNotDeleteTodoException();
+    }
+  }
+
+  Future<void> updateTodo({
+    required String documentId,
+    required String text,
+  }) async {
+    try {
+      await todos.doc(documentId).update({textFieldName: text});
+    } catch (e) {
+      throw CouldNotUpdateTodoException();
+    }
+  }
+
+  Stream<Iterable<CloudTodo>> allTodos({required String ownerUserId}) {
+    return todos.snapshots().map((event) => event.docs
+        .map((doc) => CloudTodo.fromSnapshot(doc))
+        .where((todo) => todo.ownerUserId == ownerUserId));
+  }
+
+  Future<Iterable<CloudTodo>> getTodos({required String ownerUserId}) async {
+    try {
+      return await todos
+          .where(
+            ownerUserIdFieldName,
+            isEqualTo: ownerUserId,
+          )
+          .get()
+          .then(
+            (value) => value.docs.map(
+              (doc) => CloudTodo.fromSnapshot(doc),
+            ),
+          );
+    } catch (e) {
+      throw CouldNotGetAllTodosException();
+    }
   }
 
   static final FirebaseCloudStorage _shared =
