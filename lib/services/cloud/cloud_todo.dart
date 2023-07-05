@@ -5,18 +5,18 @@ class CloudTodo {
   final String documentId;
   final String ownerUserId;
   final String text;
-  bool isCompleted;
+  bool? isTaskCompleted;
 
   CloudTodo({
     required this.documentId,
     required this.ownerUserId,
     required this.text,
-    this.isCompleted = false,
+    this.isTaskCompleted = false,
   });
 
   CloudTodo.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : documentId = snapshot.id,
         ownerUserId = snapshot.data()[ownerUserIdFieldName],
         text = snapshot.data()[textFieldName] as String,
-        isCompleted = snapshot.data()[isCompletedFieldName];
+        isTaskCompleted = snapshot.data()[isCompletedFieldName];
 }

@@ -127,14 +127,15 @@ class FirebaseCloudStorage {
     final document = await todos.add({
       ownerUserIdFieldName: ownerUserId,
       textFieldName: '',
+      isCompletedFieldName: false,
     });
 
     final fetchedTodo = await document.get();
     return CloudTodo(
-      documentId: fetchedTodo.id,
-      ownerUserId: ownerUserId,
-      text: '',
-    );
+        documentId: fetchedTodo.id,
+        ownerUserId: ownerUserId,
+        text: '',
+        isTaskCompleted: false);
   }
 
   Future<void> deleteTodo({required String documentId}) async {

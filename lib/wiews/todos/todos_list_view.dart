@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:holdit/services/cloud/cloud_note.dart';
-import 'package:holdit/utilities/dialogs/delete_note_dialog.dart';
+import 'package:holdit/services/cloud/cloud_todo.dart';
+import 'package:holdit/utilities/dialogs/delete_todo_dialog.dart';
 
-typedef NoteCallBack = void Function(CloudNote note);
+typedef TodoCallBack = void Function(CloudTodo todo);
 
-class NotesListView extends StatelessWidget {
-  final Iterable<CloudNote> notes;
-  final NoteCallBack onDeleteNote;
-  final NoteCallBack onTap;
-  const NotesListView({
+class TodosListView extends StatefulWidget {
+  final Iterable<CloudTodo> todos;
+  final TodoCallBack onDeleteTodo;
+  final TodoCallBack onTap;
+
+  const TodosListView({
     super.key,
-    required this.notes,
-    required this.onDeleteNote,
+    required this.todos,
+    required this.onDeleteTodo,
     required this.onTap,
   });
 
   @override
+  State<TodosListView> createState() => _TodosListViewState();
+}
+
+class _TodosListViewState extends State<TodosListView> {
+  bool checkBoxIcon = false;
+
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: notes.length,
+      itemCount: widget.todos.length,
       itemBuilder: (context, index) {
-        final note = notes.elementAt(index);
+        final todo = widget.todos.elementAt(index);
         return Slidable(
           startActionPane: ActionPane(
             motion: const StretchMotion(),
@@ -32,11 +40,11 @@ class NotesListView extends StatelessWidget {
                     topRight: Radius.circular(30),
                     bottomRight: Radius.circular(30)),
                 icon: Icons.delete,
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: const Color(0xff606C5D),
                 onPressed: (context) async {
-                  final shouldDelete = await showDeleteNoteDialog(context);
+                  final shouldDelete = await showDeleteTodoDialog(context);
                   if (shouldDelete) {
-                    onDeleteNote(note);
+                    widget.onDeleteTodo(todo);
                   }
                 },
               )
@@ -44,13 +52,13 @@ class NotesListView extends StatelessWidget {
           ),
           child: ListTile(
             onTap: () {
-              onTap(note);
+              widget.onTap(todo);
             },
             title: Container(
-              height: 100,
+              height: 80,
               decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 214, 165, 227),
-                  borderRadius: BorderRadius.circular(12)),
+                  color: const Color(0xff22A699).withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(30)),
               child: Padding(
                 padding: const EdgeInsets.all(14.0),
                 child: Row(
@@ -58,18 +66,20 @@ class NotesListView extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
-                          SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Image.asset(
-                                'lib/images/note_icon.png',
-                                color: const Color(0xff4E3636),
-                              )),
-                          const SizedBox(
-                            width: 10,
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                checkBoxIcon = !checkBoxIcon;
+                              });
+                            },
+                            child: IconButton(
+                                icon: Icon(checkBoxIcon
+                                    ? Icons.check_box
+                                    : Icons.check_box_outline_blank),
+                                onPressed: null),
                           ),
                           Expanded(
-                            child: Text(note.text,
+                            child: Text(todo.text,
                                 style: GoogleFonts.outfit(
                                     fontWeight: FontWeight.w400, fontSize: 18),
                                 overflow: TextOverflow.ellipsis),

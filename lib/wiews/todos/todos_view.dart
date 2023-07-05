@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:holdit/constants/routes.dart';
+import 'package:holdit/services/cloud/cloud_todo.dart';
+import 'package:holdit/services/cloud/firebase_cloud_storage.dart';
 import 'package:holdit/wiews/notes/bottom_nav_bar_colors.dart';
 import 'package:holdit/wiews/notes/colors.dart';
+import 'package:holdit/wiews/todos/todos_list_view.dart';
+import '../../services/auth/auth_service.dart';
 
-class TodoListView extends StatefulWidget {
-  const TodoListView({super.key});
+class TodoView extends StatefulWidget {
+  const TodoView({super.key});
 
   @override
-  State<TodoListView> createState() => _TodoListViewState();
+  State<TodoView> createState() => _TodoViewState();
 }
 
-class _TodoListViewState extends State<TodoListView> {
+class _TodoViewState extends State<TodoView> {
+  late final FirebaseCloudStorage _todoService;
+  String get userId => AuthService.firebase().currentUser!.id;
+
+  @override
+  void initState() {
+    _todoService = FirebaseCloudStorage();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,15 +44,43 @@ class _TodoListViewState extends State<TodoListView> {
           Padding(
             padding: const EdgeInsets.only(right: 15),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(createUpdateTodoRoute);
+              },
               icon: const Icon(
                 Icons.add_alert,
                 color: Colors.deepPurple,
                 size: 36,
               ),
             ),
-          )
+          ),
         ],
+      ),
+      body: StreamBuilder(
+        stream: _todoService.allTodos(ownerUserId: userId),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              if (snapshot.hasData) {
+                final allTodos = snapshot.data as Iterable<CloudTodo>;
+                return TodosListView(
+                  todos: allTodos,
+                  onDeleteTodo: (todo) async {
+                    await _todoService.deleteTodo(documentId: todo.documentId);
+                  },
+                  onTap: (todo) {
+                    Navigator.of(context)
+                        .pushNamed(createUpdateTodoRoute, arguments: todo);
+                  },
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            default:
+              return const CircularProgressIndicator();
+          }
+        },
       ),
       bottomNavigationBar: SafeArea(
         child: Container(

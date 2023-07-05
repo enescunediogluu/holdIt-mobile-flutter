@@ -52,14 +52,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     return newNote;
   }
 
-  /*  void setDisplayFlag() {
-    if (_isButtonUsed) {
-      _displayFlag = '$_imageUrl';
-    } else {
-      _displayFlag = '${_note!.imageUrl}';
-    }
-  } */
-
   void _textControllerListener() async {
     final note = _note;
     if (note == null) {
@@ -273,7 +265,6 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   }
 }
 
-// ignore: camel_case_types
 class NoteViewTextFieldItem extends StatelessWidget {
   const NoteViewTextFieldItem({
     super.key,

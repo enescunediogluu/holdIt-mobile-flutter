@@ -10,7 +10,8 @@ import 'package:holdit/wiews/login_view.dart';
 import 'package:holdit/wiews/notes/create_update_note_view.dart';
 import 'package:holdit/wiews/notes/notes_view.dart';
 import 'package:holdit/wiews/register_view.dart';
-import 'package:holdit/wiews/todos/todo_list_view.dart';
+import 'package:holdit/wiews/todos/create_update_todo_view.dart';
+import 'package:holdit/wiews/todos/todos_view.dart';
 import 'package:holdit/wiews/verify_email_view.dart';
 
 void main() {
@@ -29,8 +30,9 @@ void main() {
     routes: {
       createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       registerRoute: (context) => const RegisterView(),
-      todoListRoute: (context) => const TodoListView(),
+      todoListRoute: (context) => const TodoView(),
       notesViewRoute: (context) => const NoteView(),
+      createUpdateTodoRoute: (context) => const CreateUpdateTodoView(),
     },
   ));
 }
