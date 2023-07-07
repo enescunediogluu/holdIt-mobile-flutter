@@ -49,7 +49,7 @@ class _TodoViewState extends State<TodoView> {
               },
               icon: const Icon(
                 Icons.add_alert,
-                color: Colors.deepPurple,
+                color: Color(0xff606C5D),
                 size: 36,
               ),
             ),
