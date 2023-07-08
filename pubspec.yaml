@@ -54,6 +54,7 @@ dependencies:
   firebase_storage: ^11.2.4
   rive: ^0.7.16
   google_nav_bar: ^5.0.6
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:
