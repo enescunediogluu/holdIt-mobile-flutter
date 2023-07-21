@@ -24,14 +24,13 @@ void main() {
       primarySwatch: Colors.deepPurple,
     ),
     home: BlocProvider<AuthBloc>(
-      create: (context) => AuthBloc(FirebaseAuthProvider()),
+      create: (_) => AuthBloc(FirebaseAuthProvider()),
       child: const HomePage(),
     ),
     routes: {
       createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       registerRoute: (context) => const RegisterView(),
       todoListRoute: (context) => const TodoView(),
-      notesViewRoute: (context) => const NoteView(),
       createUpdateTodoRoute: (context) => const CreateUpdateTodoView(),
     },
   ));
@@ -62,6 +61,10 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        } else if (state is AuthStateOnNotesView) {
+          return const NoteView();
+        } else if (state is AuthStateOnTodosView) {
+          return const TodoView();
         } else if (state is AuthStateRegistering) {
           return const RegisterView();
         } else {

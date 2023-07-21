@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable;
+import 'package:flutter/material.dart';
 import 'package:holdit/services/auth/auth_user.dart';
 import 'package:equatable/equatable.dart';
 
@@ -32,9 +33,17 @@ class AuthStateLoggedIn extends AuthState {
       : super(isLoading: isLoading);
 }
 
+class AuthStateOnNotesView extends AuthState {
+  const AuthStateOnNotesView({required super.isLoading});
+}
+
 class AuthStateNeedsVerification extends AuthState {
   const AuthStateNeedsVerification({required bool isLoading})
       : super(isLoading: isLoading);
+}
+
+class AuthStateOnTodosView extends AuthState {
+  const AuthStateOnTodosView({required super.isLoading});
 }
 
 class AuthStateLoggedOut extends AuthState with EquatableMixin {

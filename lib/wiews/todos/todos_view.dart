@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:holdit/constants/routes.dart';
+import 'package:holdit/services/auth/bloc/auth_bloc.dart';
+import 'package:holdit/services/auth/bloc/auth_event.dart';
 import 'package:holdit/services/cloud/cloud_todo.dart';
 import 'package:holdit/services/cloud/firebase_cloud_storage.dart';
 import 'package:holdit/wiews/notes/bottom_nav_bar_colors.dart';
@@ -103,8 +106,7 @@ class _TodoViewState extends State<TodoView> {
                       color: homeIconColor,
                     ),
                     onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, notesViewRoute, (route) => false);
+                      context.read<AuthBloc>().add(const AuthEventGoToNotes());
                       setState(() {
                         todoIconColor = navBarTabActiveColor;
                         todoBackgroundColor = navBarBgColor;
@@ -126,8 +128,6 @@ class _TodoViewState extends State<TodoView> {
                       color: todoIconColor,
                     ),
                     onPressed: () async {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, todoListRoute, (route) => false);
                       setState(() {
                         homeIconColor = navBarTabActiveColor;
                         homeBackgroundColor = navBarBgColor;

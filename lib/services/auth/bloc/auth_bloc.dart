@@ -83,6 +83,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       },
     );
+
+    on<AuthEventGoToNotes>(
+      (event, emit) => emit(
+        const AuthStateOnNotesView(isLoading: false),
+      ),
+    );
+    //go to todo route
+    on<AuthEventGoToTodos>(
+      (event, emit) => emit(const AuthStateOnTodosView(
+        isLoading: false,
+      )),
+    );
     //Should register
     on<AuthEventShouldRegister>(
       (event, emit) =>

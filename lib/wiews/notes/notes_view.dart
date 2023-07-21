@@ -176,8 +176,9 @@ class _NoteViewState extends State<NoteView> {
                       color: todoIconColor,
                     ),
                     onPressed: () async {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, todoListRoute, (route) => false);
+                      context.read<AuthBloc>().add(const AuthEventGoToTodos());
+                      /* Navigator.pushNamedAndRemoveUntil(
+                          context, todoListRoute, (route) => false); */
                       setState(() {
                         homeIconColor = navBarTabActiveColor;
                         homeBackgroundColor = navBarBgColor;

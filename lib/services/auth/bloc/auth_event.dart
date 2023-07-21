@@ -33,3 +33,11 @@ class AuthEventRegister extends AuthEvent {
 class AuthEventShouldRegister extends AuthEvent {
   const AuthEventShouldRegister();
 }
+
+class AuthEventGoToNotes extends AuthEvent {
+  const AuthEventGoToNotes();
+}
+
+class AuthEventGoToTodos extends AuthEvent {
+  const AuthEventGoToTodos();
+}
